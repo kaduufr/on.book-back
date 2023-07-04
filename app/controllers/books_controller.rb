@@ -6,12 +6,12 @@ class BooksController < ApplicationController
   def index
     @books = Book.all
 
-    render json: @books
+    render json: BookRepresenter.new(@books).as_json
   end
 
   # GET /books/1
   def show
-    render json: @book
+    render json: BookRepresenter.new(@book).as_json
   end
 
   # GET /books/search/:title
@@ -53,6 +53,6 @@ class BooksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def book_params
-      params.require(:book).permit(:title, :author, :category_id, :description, :section, :quantity)
+      params.permit(:title, :author, :category_id, :description, :section, :quantity, :image)
     end
 end

@@ -17,7 +17,7 @@ class User < ApplicationRecord
 
   def generate_jwt
     JWT.encode({ id: id,
-                 role: type_user,
+                 role: self.type_user,
                  name: name,
                  document: document,
                  exp: 60.days.from_now.to_i },

@@ -17,6 +17,8 @@ Rails.application.configure do
   # Enable server timing
   config.server_timing = true
 
+  config.active_storage.service = :local
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?
@@ -52,6 +54,8 @@ Rails.application.configure do
 
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
+
+  config.active_storage.default_url_options = { host: "localhost", port: 3000 }
 
 
   # Raises error for missing translations.

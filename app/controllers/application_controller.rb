@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-
   respond_to :json
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_user
@@ -19,14 +18,17 @@ class ApplicationController < ActionController::API
 
   def authenticate_user
     if request.headers['Authorization'].present?
-      authenticate_or_request_with_http_token do |token|
-        begin
-          jwt_payload = JWT.decode(token, Rails.application.secrets.devise[:jwt_secret_key]).first
+      begin
+        token = request.headers['Authorization'].split(' ').last
+        puts token
+        puts Rails.application.credentials.devise[:jwt_secret_key] + '2222'
 
-          @current_user_id = jwt_payload['id']
-        rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-          head :unauthorized
-        end
+        jwt_payload = JWT.decode(token, Rails.application.credentials.devise[:jwt_secret_key])
+        @current_user_id = jwt_payload.first['id']
+      rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
+        head :unauthorized
+      rescue JWT => e
+        puts e
       end
     end
   end
