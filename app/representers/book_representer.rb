@@ -15,7 +15,8 @@ class BookRepresenter
         description: book.description,
         section: book.section,
         quantity: book.quantity,
-        image: book.image_url
+        image: book.image_url,
+        available: book.available?
       }
     end
   end

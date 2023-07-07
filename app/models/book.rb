@@ -9,4 +9,8 @@ class Book < ApplicationRecord
   def image_url
     rails_blob_url(self.image, only_path: true) if self.image.attached?
   end
+
+  def available?
+    self.quantity > 0 && BookBorrow.where(book_id: self.id, active: false).count < self.quantity
+  end
 end
