@@ -16,7 +16,10 @@ class BookRepresenter
         section: book.section,
         quantity: book.quantity,
         image: book.image_url,
-        available: book.available?
+        available: book.available?,
+        published_at: book.publishYear || "N/A",
+        category_id: book.category_id,
+        category_name: book.category.name
       }
     end
   end

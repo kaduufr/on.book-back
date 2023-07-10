@@ -15,7 +15,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def register_success
     render json: {
       message: "Signed up successfully.",
-      user: current_user
+      user: current_user,
+      token: current_user.generate_jwt
     }
 
   end
@@ -23,7 +24,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def register_failure
     puts resource.errors.full_messages
     render json: {
-      message: "Something went wrong."
+      message: "Something went wrong.",
+      errors: resource.errors.full_messages
     }, status: :unprocessable_entity
   end
 

@@ -5,6 +5,7 @@ class User < ApplicationRecord
   :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
   enum type_user: { user: 0, admin: 1, employee: 2 }
+  enum gender_user: { male: 1, female: 2, other: 3 }
 
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true, length: { minimum: 6 }

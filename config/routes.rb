@@ -13,6 +13,8 @@ Rails.application.routes.draw do
               }
   get "/members-data", to: "members#show"
 
+  get 'books/search', to: 'books#search', as: 'book_search'
+  get 'books/list', to: 'books#all', as: 'book_search_by_category'
   resources :books
   resources :categories
 

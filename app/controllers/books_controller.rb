@@ -1,24 +1,30 @@
 class BooksController < ApplicationController
   before_action :set_book, only: %i[ show update destroy ]
   before_action :authenticate_user!, only: %i[ create update destroy ]
+  before_action :book_query_params, only: %i[ search ]
 
   # GET /books
   def index
-    @books = Book.all
+    @categories = Category.includes(:books).all
+    @books = []
+    @categories.each do |category|
+      last_two_books = category.books.last(2)
+      @books.concat(last_two_books)
+    end
 
     render json: BookRepresenter.new(@books).as_json
   end
 
   # GET /books/1
   def show
-    render json: BookRepresenter.new(@book).as_json
+    render json: BookRepresenter.new(Array(@book)).as_json
   end
 
-  # GET /books/search/:title
-  def search
-    @books = Book.where("title LIKE ?", "%#{params[:title]}%")
-    render json: @books
-  end
+  # # GET /books/search/:title
+  # def search
+  #   @books = Book.where("title LIKE ?", "%#{params[:title]}%")
+  #   render json: @books
+  # end
 
   # POST /books
   def create
@@ -29,6 +35,24 @@ class BooksController < ApplicationController
     else
       render json: @book.errors, status: :unprocessable_entity
     end
+  end
+
+  # # GET /books/search?category_id=:category_id
+  def search
+    @books = Book.where(category_id: params[:category]).limit(params[:limit] || 10).offset(params[:offset] || 0)
+    render json: {
+      data: BookRepresenter.new(@books).as_json,
+      _meta: {
+        total: Book.where(category_id: params[:category]).count,
+        limit: params[:limit] || 10,
+        offset: params[:offset] || 0
+      }
+    }
+  end
+
+  def all
+    @books = Book.all
+    render json: BookRepresenter.new(@books).as_json
   end
 
   # PATCH/PUT /books/1
@@ -49,6 +73,11 @@ class BooksController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_book
       @book = Book.find(params[:id])
+    end
+
+    # Query params to filter and paginate books
+    def book_query_params
+      params.permit(:category_id, :limit, :offset)
     end
 
     # Only allow a list of trusted parameters through.
