@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :categories
 
   post 'reservar-livro', to: 'book_borrow#create', as: 'book_borrow_create'
+  get 'livros-emprestados', to: 'book_borrow#all', as: 'book_borrow_all'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
