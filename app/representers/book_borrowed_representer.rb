@@ -10,7 +10,7 @@ class BookBorrowedRepresenter
       {
         id: borrow.id,
         title: borrow.book.title,
-        published_at: borrow.book.publishYear,
+        created_at: borrow.created_at,
         due_date: borrow.due_date,
         quantity: borrow.quantity,
         active: borrow.active

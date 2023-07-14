@@ -2,11 +2,8 @@ class MembersController < ApplicationController
   before_action :authenticate_user!
 
   def show
-    user = get_user_from_token
-    render json: {
-      message: "If you see this, you are logged in.",
-      user: user
-    }
+    user = User.find({ type => "user"})
+    render json: UserRepresenter.new(user).as_json
   end
 
   private

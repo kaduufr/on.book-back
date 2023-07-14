@@ -30,11 +30,19 @@ class BooksController < ApplicationController
   def create
     @book = Book.new(book_params)
 
-    if @book.save
-      render json: @book, status: :created, location: @book
-    else
-      render json: @book.errors, status: :unprocessable_entity
+    puts @book.errors
+    begin
+      if @book.save
+        render json: @book, status: :created, location: @book
+      else
+        render json: @book.errors, status: :unprocessable_entity
+      end
+    rescue
+      render json: {
+        message: "Erro ao cadastrar livro."
+      }, status: :unprocessable_entity
     end
+
   end
 
   # # GET /books/search?category_id=:category_id
@@ -52,7 +60,20 @@ class BooksController < ApplicationController
 
   def all
     @books = Book.all
-    render json: BookRepresenter.new(@books).as_json
+    if @books.empty?
+      render json: {
+        message: "Não há livros cadastrados."
+      }, status: :no_content
+      return
+    end
+    render json: {
+      data: BookRepresenter.new(@books).as_json,
+      _meta: {
+        total: Book.count,
+        limit: params[:limit] || 10,
+        offset: params[:offset] || 0
+      }
+    }
   end
 
   # PATCH/PUT /books/1
@@ -67,6 +88,15 @@ class BooksController < ApplicationController
   # DELETE /books/1
   def destroy
     @book.destroy
+    if @book.destroyed?
+      render json: {
+        message: "Livro removido com sucesso."
+      }
+    else
+      render json: {
+        message: "Erro ao remover livro."
+      }, status: :unprocessable_entity
+    end
   end
 
   private
@@ -77,11 +107,11 @@ class BooksController < ApplicationController
 
     # Query params to filter and paginate books
     def book_query_params
-      params.permit(:category_id, :limit, :offset)
+      params.permit(:category_id, :limit, :offset, :title)
     end
 
     # Only allow a list of trusted parameters through.
     def book_params
-      params.permit(:title, :author, :category_id, :description, :section, :quantity, :image)
+      params.permit(:title, :author, :category_id, :description, :section, :quantity, :image, :publishYear)
     end
 end

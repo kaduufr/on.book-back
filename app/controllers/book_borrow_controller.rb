@@ -20,10 +20,16 @@ class BookBorrowController < ApplicationController
 
   def all
     @books_borrowed = BookBorrow.where(user_id: @current_user_id)
+    if @books_borrowed.empty?
+      render json: {
+        message: "Você não possui nenhum livro emprestado."
+      }, status: :no_content
+      return
+    end
     render json: {
-      message: "Emprestimos encontrados com sucesso.",
-      data: BookBorrowedRepresenter.new(@books_borrowed).as_json
+      data: BookBorrowedRepresenter.new(@books_borrowed).as_json,
     }
+
   end
 
   private

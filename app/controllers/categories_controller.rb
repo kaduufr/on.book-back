@@ -11,7 +11,7 @@ class CategoriesController < ApplicationController
 
   # GET /categories/1
   def show
-    render json: @category
+    render json: Array(@category)
   end
 
   # POST /categories
@@ -47,6 +47,6 @@ class CategoriesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def category_params
-      params.permit(:name, :description)
+      params.permit(:name, :description, :active)
     end
 end
