@@ -1,4 +1,8 @@
 class BookBorrowController < ApplicationController
+
+  before_action :authenticate_user!
+  before_action :set_book_borrow, only: %i[ show  ]
+
   def create
     @book_borrow = BookBorrow.new(book_borrow_params)
     @user_book_borrows = BookBorrow.where(user_id: @book_borrow.user_id, active: true)
@@ -32,7 +36,23 @@ class BookBorrowController < ApplicationController
 
   end
 
+  def show
+    render json: {
+      data: ShowBookBorrowedRepresenter.new(@book_borrow).as_json,
+    }
+  end
+
+  def update
+    @book_borrow = BookBorrow.find(params[:id])
+    @book_borrow.update({ active: false })
+    render json: @book_borrow
+  end
+
   private
+
+  def set_book_borrow
+    @book_borrow = BookBorrow.all.where(book_id: params[:id], active: true)
+  end
 
   def cant_borrow
     render json: { message: "Você não pode pegar nenhum livro emprestado", error: "Você possui livro em atraso" }, status: :unprocessable_entity

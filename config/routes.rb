@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post 'reservar-livro', to: 'book_borrow#create', as: 'book_borrow_create'
   get 'livros-emprestados', to: 'book_borrow#all', as: 'book_borrow_all'
   get 'livros-emprestados/:id', to: 'book_borrow#show', as: 'book_borrow_show'
+  put 'livros-emprestados/:id', to: 'book_borrow#update', as: 'book_borrow_update'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

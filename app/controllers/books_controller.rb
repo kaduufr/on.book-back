@@ -47,16 +47,35 @@ class BooksController < ApplicationController
 
   # # GET /books/search?category_id=:category_id
   def search
-    @books = Book.where(category_id: params[:category]).limit(params[:limit] || 10).offset(params[:offset] || 0)
+    category_id = params[:category]
+    title = params[:title].to_s
+
+    query = Book.all
+
+    if category_id
+      query = query.where(category_id: category_id)
+    end
+
+    if title
+      query = query.where("LOWER(title) LIKE ?", "%#{title.downcase}%")
+    end
+
+    limit = params[:limit] || 10
+    offset = params[:offset] || 0
+
+    total = query.count
+    books = query.limit(limit).offset(offset)
+
     render json: {
-      data: BookRepresenter.new(@books).as_json,
+      data: BookRepresenter.new(books).as_json,
       _meta: {
-        total: Book.where(category_id: params[:category]).count,
-        limit: params[:limit] || 10,
-        offset: params[:offset] || 0
+        total: total,
+        limit: limit,
+        offset: offset
       }
     }
   end
+
 
   def all
     @books = Book.all
