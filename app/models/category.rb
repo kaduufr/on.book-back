@@ -1,4 +1,4 @@
 class Category < ApplicationRecord
-  has_many :books, dependent: :destroy
+  has_many :books
   validates :name, presence: true
 end

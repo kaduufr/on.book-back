@@ -23,7 +23,7 @@ class BookBorrowController < ApplicationController
   end
 
   def all
-    @books_borrowed = BookBorrow.where(user_id: @current_user_id)
+    @books_borrowed = BookBorrow.where(user_id: @current_user_id).order(created_at: :desc)
     if @books_borrowed.empty?
       render json: {
         message: "Você não possui nenhum livro emprestado."

@@ -5,7 +5,7 @@ class BooksController < ApplicationController
 
   # GET /books
   def index
-    @categories = Category.includes(:books).all
+    @categories = Category.includes(:books).all.where(active: true)
     @books = []
     @categories.each do |category|
       last_two_books = category.books.last(2)
